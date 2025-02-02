@@ -13,16 +13,17 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 
 def download_and_store_csv(url, filename="For_Prediction.csv", max_rows=201):
-    """Downloads a zip file from a URL, extracts the CSV, reads up to max_rows, and stores it.
-       Handles exceptions and opens in text mode.
+    """This function downloads a zip file from a URL, extracts the CSV, reads up to max_rows, and stores it.
+       And also handles the exceptions and opens the file in text mode.
     """
     try:
         response = requests.get(url, stream=True)
         response.raise_for_status()
 
-        # Download zip file into memory
+        # Since the file has to be downloaded from the url,
+        # This might return exception so I tried to zip the file into memory
         zip_file = zipfile.ZipFile(io.BytesIO(response.content))
-        csv_filename = [f for f in zip_file.namelist() if f.endswith('.csv')][0]  # Get CSV filename
+        csv_filename = [f for f in zip_file.namelist() if f.endswith('.csv')][0]  # I used this program to get the CSV filename
         with zip_file.open(csv_filename) as csvfile_in:
             reader = csv.reader((line.decode('utf-8') for line in csvfile_in))
             with open(filename, 'w', newline='', encoding='utf-8') as csvfile_out:
@@ -50,7 +51,7 @@ def download_and_store_csv(url, filename="For_Prediction.csv", max_rows=201):
 
 
 def analyze_dataset(filename="For_Prediction.csv"):
-    """Opens the specified dataset, prints its dimensions and the number of unique classes."""
+    #This program open the required dataset and prints its rows and columns and the number of unique classes
     try:
         df = pd.read_csv(filename)
         rows, cols = df.shape
@@ -110,6 +111,6 @@ if download_and_store_csv(kaggle_url):
     if df is not None:
         model = predict_sales(df)
         if model is not None:
-            print("Linear Regression Model training and prediction completed successfully.")
+            print("Linear Regression Model training and prediction successful")
 else:
-    print("Process failed. Please check for errors.")
+    print("Process failed.")
